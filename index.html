@@ -214,6 +214,21 @@ body { display: flex; flex-direction: column; max-width: 430px; margin: 0 auto; 
 .toggle.on { background: var(--green); }
 .toggle::after { content:''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--text); top: 3px; left: 3px; transition: transform 0.2s; }
 .toggle.on::after { transform: translateX(18px); }
+
+/* Projetos criativos */
+.pj-tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.pj-tab { font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: 20px; border: 0.5px solid var(--border2); background: transparent; color: var(--text3); cursor: pointer; white-space: nowrap; }
+.pj-tab.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+.pj-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; }
+.pj-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
+.pj-meta { font-size: 11px; color: var(--text3); margin-top: 6px; line-height: 1.5; }
+.pj-meta b { color: var(--text2); font-weight: 500; }
+.pj-actions { display: flex; gap: 6px; margin-top: 10px; }
+.pj-btn { font-size: 11px; padding: 6px 10px; border-radius: 8px; border: 0.5px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; }
+.pj-btn.ok { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
+.pj-err { font-size: 11px; color: var(--red); margin-top: 8px; }
+.pj-hint { font-size: 11px; color: var(--text3); margin: 10px 0 8px; line-height: 1.4; }
+.inp:disabled { opacity: 0.55; }
 </style>
 </head>
 <body>
@@ -226,11 +241,12 @@ body { display: flex; flex-direction: column; max-width: 430px; margin: 0 auto; 
 </div>
 
 <div class="tabs">
-  <button class="tab active" onclick="showSection('treinos',this)">Treinos</button>
-  <button class="tab" onclick="showSection('atividades',this)">Atividades</button>
-  <button class="tab" onclick="showSection('corpo',this)">Corpo</button>
-  <button class="tab" onclick="showSection('ciclo',this)">Ciclo</button>
-  <button class="tab" onclick="showSection('meds',this)">Medicação</button>
+  <button class="tab active" data-section="treinos" onclick="showSection('treinos')">Treinos</button>
+  <button class="tab" data-section="atividades" onclick="showSection('atividades')">Atividades</button>
+  <button class="tab" data-section="corpo" onclick="showSection('corpo')">Corpo</button>
+  <button class="tab" data-section="ciclo" onclick="showSection('ciclo')">Ciclo</button>
+  <button class="tab" data-section="meds" onclick="showSection('meds')">Medicação</button>
+  <button class="tab" data-section="projetos" onclick="showSection('projetos')">Projetos</button>
 </div>
 
 <div class="content">
@@ -422,40 +438,60 @@ body { display: flex; flex-direction: column; max-width: 430px; margin: 0 auto; 
   <div class="log-list" id="logMeds"></div>
 </div>
 
+<!-- PROJETOS CRIATIVOS -->
+<div id="projetos" class="section">
+  <button class="btn btn-primary" style="width:100%;margin-bottom:14px" onclick="pjOpenNovo()">+ Novo projeto</button>
+
+  <div class="pj-tabs">
+    <button class="pj-tab active" id="pjTabAtivos" data-tab="ativos" onclick="pjSetTab('ativos')">Ativos (0/2)</button>
+    <button class="pj-tab" id="pjTabIdeias" data-tab="ideias" onclick="pjSetTab('ideias')">Ideias (0)</button>
+    <button class="pj-tab" id="pjTabConcluidos" data-tab="concluidos" onclick="pjSetTab('concluidos')">Concluídos (0)</button>
+    <button class="pj-tab" id="pjTabAbandonados" data-tab="abandonados" onclick="pjSetTab('abandonados')">Abandonados (0)</button>
+  </div>
+
+  <div id="pjList"></div>
+</div>
+
 </div><!-- end content -->
 
 <!-- Bottom Nav -->
 <div class="bottom-nav">
-  <div class="nav-item active" onclick="showSection('treinos');setNav(this)">
+  <div class="nav-item active" data-section="treinos" onclick="showSection('treinos')">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="6" width="18" height="4" rx="2"/><rect x="3" y="14" width="18" height="4" rx="2"/>
     </svg>
     <span class="nav-label">treinos</span>
   </div>
-  <div class="nav-item" onclick="showSection('atividades');setNav(this)">
+  <div class="nav-item" data-section="atividades" onclick="showSection('atividades')">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
     </svg>
     <span class="nav-label">atividades</span>
   </div>
-  <div class="nav-item" onclick="showSection('corpo');setNav(this)">
+  <div class="nav-item" data-section="corpo" onclick="showSection('corpo')">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 17l4-8 4 6 3-4 4 6"/>
     </svg>
     <span class="nav-label">corpo</span>
   </div>
-  <div class="nav-item" onclick="showSection('ciclo');setNav(this)">
+  <div class="nav-item" data-section="ciclo" onclick="showSection('ciclo')">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>
     </svg>
     <span class="nav-label">ciclo</span>
   </div>
-  <div class="nav-item" onclick="showSection('meds');setNav(this)">
+  <div class="nav-item" data-section="meds" onclick="showSection('meds')">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z"/>
       <path d="M12 8v8M8 12h8"/>
     </svg>
     <span class="nav-label">medicação</span>
+  </div>
+  <div class="nav-item" data-section="projetos" onclick="showSection('projetos')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/>
+    </svg>
+    <span class="nav-label">projetos</span>
   </div>
 </div>
 
@@ -473,6 +509,42 @@ body { display: flex; flex-direction: column; max-width: 430px; margin: 0 auto; 
   </div>
 </div>
 
+<!-- Modal: novo/promover projeto -->
+<div class="modal-overlay" id="pjModal" onclick="pjCloseModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title" id="pjModalTitle">Novo projeto</div>
+      <input class="inp" id="pjNome" placeholder="Nome do projeto" style="width:100%;margin-bottom:8px">
+      <div class="pj-hint">Preencha os dois campos abaixo para entrar direto em Ativos. Deixe em branco para guardar só como Ideia.</div>
+      <input class="inp" id="pjPronto" placeholder="Pronto quando…" style="width:100%;margin-bottom:8px">
+      <input class="inp" id="pjPasso" placeholder="Primeiro passo concreto…" style="width:100%">
+      <div class="pj-err" id="pjErro"></div>
+    </div>
+    <div style="display:flex;gap:8px;padding:0 20px;margin-top:16px">
+      <button class="btn btn-primary" style="flex:1" onclick="pjSalvar(true)">Criar ativo</button>
+      <button class="btn" style="flex:1" onclick="pjSalvar(false)" id="pjBtnIdeia">Só guardar ideia</button>
+    </div>
+    <button class="modal-close" onclick="pjCloseModal()">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal: abandono com motivo -->
+<div class="modal-overlay" id="pjAbandonoModal" onclick="pjCloseAbandono(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">Abandonar projeto</div>
+      <div class="modal-sub">Isso é um ato, não um esquecimento. Diga por quê.</div>
+      <input class="inp" id="pjMotivo" placeholder="Motivo do abandono…" style="width:100%">
+    </div>
+    <div style="display:flex;gap:8px;padding:0 20px;margin-top:16px">
+      <button class="btn btn-primary" style="flex:1" onclick="pjConfirmarAbandono()">Confirmar abandono</button>
+    </div>
+    <button class="modal-close" onclick="pjCloseAbandono()">Cancelar</button>
+  </div>
+</div>
+
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────
 const S = {
@@ -482,7 +554,8 @@ const S = {
   ciclo: JSON.parse(localStorage.getItem('mv_ciclo') || '{}'),
   notas: JSON.parse(localStorage.getItem('mv_notas') || '[]'),
   meds: JSON.parse(localStorage.getItem('mv_meds') || '{}'),
-  notif: JSON.parse(localStorage.getItem('mv_notif') || 'false')
+  notif: JSON.parse(localStorage.getItem('mv_notif') || 'false'),
+  projetos: JSON.parse(localStorage.getItem('mv_projetos') || '{"ativos":[],"ideias":[],"concluidos":[],"abandonados":[]}')
 };
 function save(key, data){ localStorage.setItem('mv_'+key, JSON.stringify(data)); }
 
@@ -1026,30 +1099,180 @@ function renderNotas(){
 }
 
 // ── NAVIGATION ────────────────────────────────────────────────────────
-function showSection(id, tabEl){
+// Sincroniza seção ativa, aba do topo e ícone do bottom-nav pelo mesmo
+// atributo data-section — evita comparação frágil de texto (bug anterior:
+// a aba "medicação" nunca acendia ao navegar pelo bottom-nav).
+function showSection(id){
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if(tabEl){
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tabEl.classList.add('active');
-  }
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.section === id));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.section === id));
 }
-function setNav(el){
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  el.classList.add('active');
-  const map = { treinos:0, atividades:1, corpo:2, ciclo:3 };
-  const tabs = document.querySelectorAll('.tab');
-  const sections = ['treinos','atividades','corpo','ciclo'];
-  sections.forEach((s,i) => {
-    if(el.querySelector('.nav-label').textContent === s || 
-       el.querySelector('.nav-label').textContent === s.replace('atividades','atividades') ||
-       el.querySelector('.nav-label').textContent === 'corpo' && s==='corpo' ||
-       el.querySelector('.nav-label').textContent === 'ciclo' && s==='ciclo' ||
-       el.querySelector('.nav-label').textContent === 'treinos' && s==='treinos' ||
-       el.querySelector('.nav-label').textContent === 'atividades' && s==='atividades'){
-      tabs[i].classList.add('active');
-    } else { tabs[i].classList.remove('active'); }
-  });
+
+// ── PROJETOS CRIATIVOS ───────────────────────────────────────────────
+// Regras: máximo 2 ativos simultâneos; entrada em "ativos" exige
+// "pronto quando" + "primeiro passo"; abandono exige motivo escrito.
+let pjTab = 'ativos';
+let pjPromovendoId = null;
+let pjAbandonoAlvo = null; // { id, origem }
+
+function pjSetTab(t){
+  pjTab = t;
+  document.querySelectorAll('.pj-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  renderProjetos();
+}
+
+function pjOpenNovo(){
+  pjPromovendoId = null;
+  document.getElementById('pjModalTitle').textContent = 'Novo projeto';
+  document.getElementById('pjNome').value = '';
+  document.getElementById('pjNome').disabled = false;
+  document.getElementById('pjPronto').value = '';
+  document.getElementById('pjPasso').value = '';
+  document.getElementById('pjErro').textContent = '';
+  document.getElementById('pjBtnIdeia').style.display = 'block';
+  document.getElementById('pjModal').classList.add('open');
+}
+
+function pjPromover(id){
+  const ideia = S.projetos.ideias.find(i => i.id === id);
+  if(!ideia) return;
+  pjPromovendoId = id;
+  document.getElementById('pjModalTitle').textContent = 'Promover para ativo';
+  document.getElementById('pjNome').value = ideia.nome;
+  document.getElementById('pjNome').disabled = true;
+  document.getElementById('pjPronto').value = '';
+  document.getElementById('pjPasso').value = '';
+  document.getElementById('pjErro').textContent = '';
+  document.getElementById('pjBtnIdeia').style.display = 'none';
+  document.getElementById('pjModal').classList.add('open');
+}
+
+function pjCloseModal(e){
+  if(!e || e.target.id === 'pjModal') document.getElementById('pjModal').classList.remove('open');
+}
+
+function pjSalvar(comoAtivo){
+  const nome = document.getElementById('pjNome').value.trim();
+  const pronto = document.getElementById('pjPronto').value.trim();
+  const passo = document.getElementById('pjPasso').value.trim();
+  const erroEl = document.getElementById('pjErro');
+  erroEl.textContent = '';
+  if(!nome){ erroEl.textContent = 'Dê um nome ao projeto.'; return; }
+
+  if(pjPromovendoId){
+    if(!pronto || !passo){ erroEl.textContent = 'Preencha os dois campos para promover. Sem isso, continua ideia.'; return; }
+    if(S.projetos.ativos.length >= 2){ erroEl.textContent = 'Já há 2 ativos. Conclua ou abandone um antes de promover este.'; return; }
+    const ideia = S.projetos.ideias.find(i => i.id === pjPromovendoId);
+    S.projetos.ativos.push({ id: ideia.id, nome: ideia.nome, pronto, passo, iniciadoEm: fmtDate(new Date()) });
+    S.projetos.ideias = S.projetos.ideias.filter(i => i.id !== pjPromovendoId);
+    save('projetos', S.projetos);
+    document.getElementById('pjModal').classList.remove('open');
+    renderProjetos();
+    return;
+  }
+
+  if(comoAtivo){
+    if(!pronto || !passo){ erroEl.textContent = 'Preencha "pronto quando" e o primeiro passo — ou guarde só como ideia.'; return; }
+    if(S.projetos.ativos.length >= 2){
+      S.projetos.ideias.unshift({ id: Date.now().toString(), nome, criadoEm: fmtDate(new Date()) });
+      save('projetos', S.projetos);
+      document.getElementById('pjModal').classList.remove('open');
+      pjSetTab('ideias');
+      return;
+    }
+    S.projetos.ativos.push({ id: Date.now().toString(), nome, pronto, passo, iniciadoEm: fmtDate(new Date()) });
+  } else {
+    S.projetos.ideias.unshift({ id: Date.now().toString(), nome, criadoEm: fmtDate(new Date()) });
+  }
+  save('projetos', S.projetos);
+  document.getElementById('pjModal').classList.remove('open');
+  renderProjetos();
+}
+
+function pjConcluir(id){
+  const item = S.projetos.ativos.find(i => i.id === id);
+  if(!item) return;
+  S.projetos.ativos = S.projetos.ativos.filter(i => i.id !== id);
+  S.projetos.concluidos.unshift({ ...item, concluidoEm: fmtDate(new Date()) });
+  save('projetos', S.projetos);
+  renderProjetos();
+}
+
+function pjAbrirAbandono(id, origem){
+  pjAbandonoAlvo = { id, origem };
+  document.getElementById('pjMotivo').value = '';
+  document.getElementById('pjAbandonoModal').classList.add('open');
+}
+function pjCloseAbandono(e){
+  if(!e || e.target.id === 'pjAbandonoModal') document.getElementById('pjAbandonoModal').classList.remove('open');
+}
+function pjConfirmarAbandono(){
+  const motivo = document.getElementById('pjMotivo').value.trim();
+  if(!motivo || !pjAbandonoAlvo) return;
+  const { id, origem } = pjAbandonoAlvo;
+  const lista = S.projetos[origem];
+  const item = lista.find(i => i.id === id);
+  if(!item) return;
+  S.projetos[origem] = lista.filter(i => i.id !== id);
+  S.projetos.abandonados.unshift({ ...item, abandonadoEm: fmtDate(new Date()), motivo });
+  save('projetos', S.projetos);
+  document.getElementById('pjAbandonoModal').classList.remove('open');
+  pjAbandonoAlvo = null;
+  renderProjetos();
+}
+
+function renderProjetos(){
+  document.getElementById('pjTabAtivos').textContent = `Ativos (${S.projetos.ativos.length}/2)`;
+  document.getElementById('pjTabIdeias').textContent = `Ideias (${S.projetos.ideias.length})`;
+  document.getElementById('pjTabConcluidos').textContent = `Concluídos (${S.projetos.concluidos.length})`;
+  document.getElementById('pjTabAbandonados').textContent = `Abandonados (${S.projetos.abandonados.length})`;
+
+  const el = document.getElementById('pjList');
+  let html = '';
+  if(pjTab === 'ativos'){
+    html = !S.projetos.ativos.length
+      ? '<div class="log-empty">Nenhum projeto ativo. Promova uma ideia ou crie um novo.</div>'
+      : S.projetos.ativos.map(p => `
+        <div class="pj-card">
+          <div class="pj-name">${p.nome}</div>
+          <div class="pj-meta"><b>Pronto quando:</b> ${p.pronto}</div>
+          <div class="pj-meta"><b>Próximo passo:</b> ${p.passo}</div>
+          <div class="pj-actions">
+            <button class="pj-btn ok" onclick="pjConcluir('${p.id}')">Concluir</button>
+            <button class="pj-btn" onclick="pjAbrirAbandono('${p.id}','ativos')">Abandonar</button>
+          </div>
+        </div>`).join('');
+  } else if(pjTab === 'ideias'){
+    html = !S.projetos.ideias.length
+      ? '<div class="log-empty">Nenhuma ideia guardada.</div>'
+      : S.projetos.ideias.map(p => `
+        <div class="pj-card">
+          <div class="pj-name">${p.nome}</div>
+          <div class="pj-actions">
+            <button class="pj-btn ok" onclick="pjPromover('${p.id}')">Promover para ativo</button>
+            <button class="pj-btn" onclick="pjAbrirAbandono('${p.id}','ideias')">Descartar</button>
+          </div>
+        </div>`).join('');
+  } else if(pjTab === 'concluidos'){
+    html = !S.projetos.concluidos.length
+      ? '<div class="log-empty">Nada concluído ainda.</div>'
+      : S.projetos.concluidos.map(p => `
+        <div class="pj-card">
+          <div class="pj-name">${p.nome}</div>
+          <div class="pj-meta">Concluído em ${p.concluidoEm}</div>
+        </div>`).join('');
+  } else {
+    html = !S.projetos.abandonados.length
+      ? '<div class="log-empty">Nenhum abandono registrado.</div>'
+      : S.projetos.abandonados.map(p => `
+        <div class="pj-card">
+          <div class="pj-name">${p.nome}</div>
+          <div class="pj-meta">Abandonado em ${p.abandonadoEm}</div>
+          <div class="pj-meta" style="font-style:italic">"${p.motivo}"</div>
+        </div>`).join('');
+  }
+  el.innerHTML = html;
 }
 
 // ── UTILS ─────────────────────────────────────────────────────────────
@@ -1071,6 +1294,7 @@ renderCorpo();
 buildCal();
 renderNotas();
 renderMeds();
+renderProjetos();
 
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
